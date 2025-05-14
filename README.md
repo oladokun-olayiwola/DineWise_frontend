@@ -1,16 +1,31 @@
-# nutri_budget
+#DineWise
 
-A new Flutter project.
 
-## Getting Started
+# 📱 Running the Flutter Project Locally
 
-This project is a starting point for a Flutter application.
+## ✅ Requirements
+- Flutter SDK installed
+- Android Studio or VS Code (with Flutter & Dart plugins)
+- Emulator or physical device connected
+- Internet access
 
-A few resources to get you started if this is your first Flutter project:
+## 🛠 Steps to Run
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```bash
+git clone https://github.com/yourusername/your-flutter-project.git
+cd your-flutter-project
+flutter pub get
+flutter run
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Optional (for iOS)
+```bash
+open ios/Runner.xcworkspace
+```
+
+## 🧪 Troubleshooting
+
+```bash
+flutter doctor        # Diagnose setup issues
+flutter clean         # Fix build errors
+```
