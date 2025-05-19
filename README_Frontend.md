@@ -245,5 +245,8 @@ This project is inspired by:
 
 
 ## 📸 Screenshots
+> ![SPLASH SCREEN](./images/splash_screen.png)
+> ![ONBOARDING SCREEN](./images/onboarding_screen.png)
+> ![RECOMMENDATION SCREEN](./images/recommendation_screen.png)
+> ![GENERATED RECOMMENDATION SCEEN](./images/generated_recommendation_screen.png)
 
-> [Insert screenshots here]
