@@ -68,7 +68,7 @@ class _DietsState extends State<Diets> {
                   child: CircleAvatar(
                     radius: 10,
                     backgroundColor:
-                    index == 2 ? Colors.pink : Colors.grey.shade300,
+                    index == 2 ? Colors.green : Colors.grey.shade300,
                     child: Text(
                       '${index + 1}',
                       style: TextStyle(
@@ -115,7 +115,7 @@ class _DietsState extends State<Diets> {
                     toggleSelection(diet);
                   },
                   backgroundColor: Colors.grey.shade200,
-                  selectedColor: Colors.pink,
+                  selectedColor: Colors.green,
                   labelStyle: TextStyle(
                     color: isSelected ? Colors.white : Colors.black,
                   ),
@@ -156,7 +156,7 @@ class _DietsState extends State<Diets> {
                    Navigator.pushNamed(context, '/fourth');
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.pink,
+                    backgroundColor: Colors.green,
                     padding:
                     EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
                   ),

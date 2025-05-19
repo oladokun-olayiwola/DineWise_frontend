@@ -157,6 +157,8 @@ void main() {
 import 'package:flutter/material.dart';
 
 class LunchTimeScreen extends StatefulWidget {
+  const LunchTimeScreen({super.key});
+
   @override
   _LunchTimeScreenState createState() => _LunchTimeScreenState();
 }
@@ -186,11 +188,15 @@ class _LunchTimeScreenState extends State<LunchTimeScreen> {
                 itemCount: 2, // Number of images
                 itemBuilder: (context, index) {
                   return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0,),
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: ClipRRect(
                       borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(12.0), // Match the top-right corner
-                        bottomRight: Radius.circular(12.0), // Match the bottom-right corner
+                        topRight: Radius.circular(
+                          12.0,
+                        ), // Match the top-right corner
+                        bottomRight: Radius.circular(
+                          12.0,
+                        ), // Match the bottom-right corner
                       ),
                       child: Image.asset(
                         index == 0
@@ -213,23 +219,20 @@ class _LunchTimeScreenState extends State<LunchTimeScreen> {
               child: Text(
                 'Enjoy your lunch time',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
             ),
 
             // Description Text
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 19.0, vertical: 27.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 19.0,
+                vertical: 27.0,
+              ),
               child: Text(
                 'Just relax and not overthink what to eat. This is in our side with our personalized meal plans just prepared and adapted to your needs.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black54,
-                ),
+                style: TextStyle(fontSize: 16, color: Colors.black54),
               ),
             ),
 
@@ -238,7 +241,10 @@ class _LunchTimeScreenState extends State<LunchTimeScreen> {
 
             // Footer with page indicator and button
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 20.0,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -250,7 +256,7 @@ class _LunchTimeScreenState extends State<LunchTimeScreen> {
                         height: 8,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.pink, // Active indicator
+                          color: Colors.green, // Active indicator
                         ),
                       ),
                       SizedBox(width: 8),
@@ -274,17 +280,18 @@ class _LunchTimeScreenState extends State<LunchTimeScreen> {
                     ],
                   ),
 
-
                   // Next Button
                   ElevatedButton(
                     onPressed: () {
                       // Add navigation or action here
-                      Navigator.pushNamed(context, '/second');
-
+                      Navigator.pushNamed(context, '/fourth');
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink, // Button color
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      backgroundColor: Colors.green, // Button color
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
                     ),
                     child: Text(
                       'Next',
@@ -306,8 +313,7 @@ class _LunchTimeScreenState extends State<LunchTimeScreen> {
 }
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: LunchTimeScreen(),
-  ));
+  runApp(
+    MaterialApp(debugShowCheckedModeBanner: false, home: LunchTimeScreen()),
+  );
 }

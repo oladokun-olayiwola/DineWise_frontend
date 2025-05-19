@@ -1,67 +1,86 @@
-
-import 'dart:convert'; // For json.decode
+import 'dart:convert';
+import 'dart:io' show Platform;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 import 'health_rating_screen.dart';
+import 'package:flutter/foundation.dart';
 
 class HomeScreenn extends StatefulWidget {
+  const HomeScreenn({super.key});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreenn> {
-  List<dynamic> mealRecommendations = []; // To store fetched meal recommendations
-  bool isLoading = false; // To show loading spinner while fetching data
-  TextEditingController _budgetController = TextEditingController();
+  List<dynamic> mealRecommendations = [];
+  bool isLoading = false;
+  final TextEditingController _budgetController = TextEditingController();
 
-  // Fetch meal recommendations from the backend
+  // ✅ Dynamically get API base URL based on platform
+  String getBaseUrl() {
+    if (Platform.isAndroid) {
+      return 'http://10.0.2.2:8080';
+    } else if (Platform.isIOS) {
+      return 'http://localhost:8080';
+    } else if (Platform.isWindows ||
+        Platform.isLinux ||
+        Platform.isMacOS ||
+        kIsWeb) {
+      return 'http://localhost:8080';
+    } else {
+      throw UnsupportedError("Platform not supported");
+    }
+  }
+
+  // ✅ Fetch meal recommendations
   Future<void> fetchMealRecommendations(String budget) async {
-    String apiUrl = 'http://localhost:8080/api/recommendations'; // Backend API URL
-
     setState(() {
       isLoading = true;
     });
 
-    final response = await http.get(Uri.parse('$apiUrl?budget=$budget'));
+    final String apiUrl = '${getBaseUrl()}/api/recommendations?budget=$budget';
 
-    if (response.statusCode == 200) {
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        setState(() {
+          mealRecommendations = json.decode(response.body);
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to fetch recommendations')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
+    } finally {
       setState(() {
-        mealRecommendations = json.decode(response.body); // Parse JSON response
         isLoading = false;
       });
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-      // Handle error
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to fetch recommendations')),
-      );
     }
   }
 
+  // ✅ UI
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor:  Colors.pink[50],
-
       appBar: AppBar(
-        title: Text('NutriBudget'),
+        title: Text('Dinewise Pro'),
         backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
       ),
-
       body: Container(
-        width: double.infinity, // Ensures the container takes up the full width
-        height: double.infinity, // Ensures the container takes up the full height
+        width: double.infinity,
+        height: double.infinity,
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Colors.white, // Start color
-              Colors.pink.shade50, // End color
-            ],
-            begin: Alignment.topLeft, // Gradient starting point
-            end: Alignment.bottomRight, // Gradient ending point
+            colors: [Colors.white, Colors.pink.shade50],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
@@ -89,11 +108,10 @@ class _HomeScreenState extends State<HomeScreenn> {
                   width: 250,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      //backgroundColor: Colors.pink[50]
                       padding: EdgeInsets.symmetric(vertical: 12.0),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8.0),
-                      )
+                      ),
                     ),
                     onPressed: () {
                       if (_budgetController.text.isNotEmpty) {
@@ -104,24 +122,370 @@ class _HomeScreenState extends State<HomeScreenn> {
                         );
                       }
                     },
-                    child: Text('Get Meal Suggestions',style: TextStyle(color: Colors.black),),
+                    child: Text(
+                      'Get Meal Suggestions',
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
                 ),
                 SizedBox(height: 20),
                 if (isLoading)
-                  Center(
-                    child: CircularProgressIndicator(),
-                  )
+                  Center(child: CircularProgressIndicator())
                 else
                   Expanded(
                     child: ListView.builder(
                       itemCount: mealRecommendations.length,
                       itemBuilder: (context, index) {
                         final meal = mealRecommendations[index];
-
                         return Card(
+                          child: ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (context) =>
+                                          HealthRatingScreen(meal: meal),
+                                ),
+                              );
+                            },
+                            leading:
+                                meal['imageUrl'] != null
+                                    ? Image.network(
+                                      meal['imageUrl'],
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    )
+                                    : Icon(Icons.fastfood),
+                            title: Text(
+                              meal['foodCombination'] ?? 'No Name Provided',
+                            ),
+                            subtitle: Text('Price: ₦${meal['price'] ?? '0'}'),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
-                          //color: Colors.pink[50],
+
+/*import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'health_rating_screen.dart';
+
+class HomeScreennn extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreennn> {
+  List<dynamic> mealRecommendations = [];
+  bool isLoading = false;
+  TextEditingController _budgetController = TextEditingController();
+
+  // ✅ Dynamically get API base URL based on platform
+  String getBaseUrl() {
+    if (Platform.isAndroid) {
+      return 'http://10.0.2.2:8080'; // For Android emulator
+    } else if (Platform.isIOS) {
+      return 'http://localhost:8080'; // For iOS simulator
+    } else {
+      throw UnsupportedError("Platform not supported");
+    }
+  }
+
+  // ✅ Fetch meal recommendations using POST request
+  Future<void> fetchMealRecommendations(String budget) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    final String apiUrl = '${getBaseUrl()}/api/recommend';
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+        body: json.encode({"budget": int.parse(budget)}), // Send budget as JSON
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          mealRecommendations = json.decode(response.body);
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to fetch recommendations')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  // ✅ UI
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('NutriBudget'),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+      ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, Colors.pink.shade50],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Set Your Budget',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                SizedBox(height: 10),
+                TextField(
+                  controller: _budgetController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Enter your budget',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10),
+                SizedBox(
+                  height: 50,
+                  width: 250,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 12.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    onPressed: () {
+                      if (_budgetController.text.isNotEmpty) {
+                        fetchMealRecommendations(_budgetController.text);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Please enter a budget')),
+                        );
+                      }
+                    },
+                    child: Text(
+                      'Get Meal Suggestions',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                if (isLoading)
+                  Center(child: CircularProgressIndicator())
+                else
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: mealRecommendations.length,
+                      itemBuilder: (context, index) {
+                        final meal = mealRecommendations[index];
+                        return Card(
+                          child: ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      HealthRatingScreen(meal: meal),
+                                ),
+                              );
+                            },
+                            leading: meal['imageUrl'] != null
+                                ? Image.network(
+                              meal['imageUrl'],
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            )
+                                : Icon(Icons.fastfood),
+                            title:
+                            Text(meal['foodItem'] ?? 'No Name Provided'),
+                            subtitle: Text(
+                                'Price: ₦${meal['price'] ?? '0'}\nCalories: ${meal['calories'] ?? 'N/A'}'),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}*/
+
+
+/*import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import 'health_rating_screen.dart';
+
+class HomeScreennn extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreennn> {
+  List<dynamic> mealRecommendations = [];
+  bool isLoading = false;
+  TextEditingController _budgetController = TextEditingController();
+
+  // ✅ Dynamically get API base URL based on platform
+  String getBaseUrl() {
+    if (Platform.isAndroid) {
+      return 'http://10.0.2.2:8080';  // For Android emulator
+    } else if (Platform.isIOS) {
+      return 'http://localhost:8080';  // For iOS simulator
+    } else {
+      throw UnsupportedError("Platform not supported");
+    }
+  }
+
+  // ✅ Fetch meal recommendations using just http.Response
+  Future<void> fetchMealRecommendations(String budget) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    final String apiUrl = '${getBaseUrl()}/api/recommend?budget=$budget';  // GET request with query parameter
+
+    try {
+      // Fetching the response from the backend
+      final http.Response response = await http.get(Uri.parse(apiUrl));  // The response is of type http.Response
+
+      // Debugging
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        // Parsing the JSON response into a List of meals
+        setState(() {
+          mealRecommendations = json.decode(response.body);  // Decode the response body to a list of meals
+        });
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to fetch recommendations')),
+        );
+      }
+    } catch (e) {
+      print('Error: $e'); // For debugging
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  // UI
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('NutriBudget'),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+      ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, Colors.pink.shade50],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Set Your Budget',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                SizedBox(height: 10),
+                TextField(
+                  controller: _budgetController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Enter your budget',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 10),
+                SizedBox(
+                  height: 50,
+                  width: 250,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 12.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
+                    onPressed: () {
+                      if (_budgetController.text.isNotEmpty) {
+                        fetchMealRecommendations(_budgetController.text);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Please enter a budget')),
+                        );
+                      }
+                    },
+                    child: Text(
+                      'Get Meal Suggestions',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                if (isLoading)
+                  Center(child: CircularProgressIndicator())
+                else
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: mealRecommendations.length,
+                      itemBuilder: (context, index) {
+                        final meal = mealRecommendations[index];
+                        return Card(
                           child: ListTile(
                             onTap: () {
                               Navigator.push(
@@ -139,10 +503,9 @@ class _HomeScreenState extends State<HomeScreenn> {
                               fit: BoxFit.cover,
                             )
                                 : Icon(Icons.fastfood),
-                            title: Text(meal['foodItem'] ?? 'No Name'),
+                            title: Text(meal['foodItem'] ?? 'No Name Provided'),
                             subtitle: Text(
-                              'Price: \₦${meal['price'] ?? '0'}\nCalories: ${meal['calories'] ?? 'N/A'}',
-                            ),
+                                'Price: ₦${meal['price'] ?? '0'}\nCalories: ${meal['calories'] ?? 'N/A'}'),
                           ),
                         );
                       },
@@ -155,4 +518,6 @@ class _HomeScreenState extends State<HomeScreenn> {
       ),
     );
   }
-}
+}*/
+
+

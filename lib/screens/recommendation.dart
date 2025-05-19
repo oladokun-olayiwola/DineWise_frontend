@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
-
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-import 'package:nutri_budget/screens/splashscreen.dart';
 
 class NutriBudgetPage extends StatefulWidget {
   const NutriBudgetPage({super.key});
@@ -43,9 +40,9 @@ class _NutriBudgetPageState extends State<NutriBudgetPage> {
         final data = jsonDecode(response.body);
         setState(() {
           recommendation =
-          data.containsKey("price")
-              ? "🍽️  Meal: ${data["meal"]}\n💵  Price: \$${data["price"]}\n🥦  Nutrition: ${data["nutrition"]}"
-              : "❌ ${data["meal"]}";
+              data.containsKey("price")
+                  ? "🍽️  Meal: ${data["meal"]}\n💵  Price: \$${data["price"]}\n🥦  Nutrition: ${data["nutrition"]}"
+                  : "❌ ${data["meal"]}";
         });
       } else {
         setState(() {
@@ -86,19 +83,19 @@ class _NutriBudgetPageState extends State<NutriBudgetPage> {
             isLoading
                 ? CircularProgressIndicator()
                 : SizedBox(
-              height: 50,
-              width: 250,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.pink,
+                  height: 50,
+                  width: 250,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.pink,
+                    ),
+                    onPressed: getMealRecommendation,
+                    child: Text(
+                      "Get Meal Suggestion",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
                 ),
-                onPressed: getMealRecommendation,
-                child: Text(
-                  "Get Meal Suggestion",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-            ),
             SizedBox(height: 30),
             if (recommendation != null)
               Container(

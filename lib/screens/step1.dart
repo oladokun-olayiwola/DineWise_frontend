@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 
 class IngredientAllergiesScreen extends StatefulWidget {
+  const IngredientAllergiesScreen({super.key});
+
   @override
   _IngredientAllergiesScreenState createState() =>
       _IngredientAllergiesScreenState();
@@ -45,10 +47,7 @@ class _IngredientAllergiesScreenState extends State<IngredientAllergiesScreen> {
             },
             child: Text(
               'Skip',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 16,
-              ),
+              style: TextStyle(color: Colors.black, fontSize: 16),
             ),
           ),
         ],
@@ -67,7 +66,7 @@ class _IngredientAllergiesScreenState extends State<IngredientAllergiesScreen> {
                   child: CircleAvatar(
                     radius: 10,
                     backgroundColor:
-                    index == 1 ? Colors.pink : Colors.grey.shade300,
+                        index == 1 ? Colors.green : Colors.grey.shade300,
                     child: Text(
                       '${index + 1}',
                       style: TextStyle(
@@ -84,20 +83,14 @@ class _IngredientAllergiesScreenState extends State<IngredientAllergiesScreen> {
             // Question Title
             Text(
               'Any ingredient allergies?',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
 
             // Description
             Text(
               'To offer you the best tailored diet experience we need to know more information about you.',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.black54,
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.black54),
             ),
             SizedBox(height: 24),
 
@@ -105,24 +98,24 @@ class _IngredientAllergiesScreenState extends State<IngredientAllergiesScreen> {
             Wrap(
               spacing: 8.0,
               runSpacing: 8.0,
-              children: allergies.map((allergy) {
-                bool isSelected = selectedAllergies.contains(allergy);
-                return ChoiceChip(
-                  label: Text(allergy),
-                  selected: isSelected,
-                  onSelected: (selected) {
-                    toggleSelection(allergy);
-                  },
-                  backgroundColor: Colors.grey.shade200,
-                  selectedColor: Colors.pink,
-                  labelStyle: TextStyle(
-                    color: isSelected ? Colors.white : Colors.black,
-                  ),
-                );
-              }).toList(),
+              children:
+                  allergies.map((allergy) {
+                    bool isSelected = selectedAllergies.contains(allergy);
+                    return ChoiceChip(
+                      label: Text(allergy),
+                      selected: isSelected,
+                      onSelected: (selected) {
+                        toggleSelection(allergy);
+                      },
+                      backgroundColor: Colors.grey.shade200,
+                      selectedColor: Colors.green,
+                      labelStyle: TextStyle(
+                        color: isSelected ? Colors.white : Colors.black,
+                      ),
+                    );
+                  }).toList(),
             ),
             Spacer(),
-
 
             // Navigation Buttons
             Row(
@@ -136,15 +129,14 @@ class _IngredientAllergiesScreenState extends State<IngredientAllergiesScreen> {
                   },
                   style: OutlinedButton.styleFrom(
                     side: BorderSide(color: Colors.grey),
-                    padding:
-                    EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 12.0,
+                    ),
                   ),
                   child: Text(
                     'Previous',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black,
-                    ),
+                    style: TextStyle(fontSize: 16, color: Colors.black),
                   ),
                 ),
 
@@ -155,9 +147,11 @@ class _IngredientAllergiesScreenState extends State<IngredientAllergiesScreen> {
                     Navigator.pushNamed(context, '/third');
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.pink,
-                    padding:
-                    EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                    backgroundColor: Colors.green,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 12.0,
+                    ),
                   ),
                   child: Text(
                     'Next',
@@ -179,8 +173,10 @@ class _IngredientAllergiesScreenState extends State<IngredientAllergiesScreen> {
 }
 
 void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: IngredientAllergiesScreen(),
-  ));
+  runApp(
+    MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: IngredientAllergiesScreen(),
+    ),
+  );
 }

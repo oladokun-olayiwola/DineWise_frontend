@@ -3,22 +3,24 @@ import 'package:flutter/material.dart';
 class HealthRatingScreen extends StatelessWidget {
   final Map<String, dynamic> meal; // Meal data passed from the previous screen
 
-  const HealthRatingScreen({Key? key, required this.meal}) : super(key: key);
+  const HealthRatingScreen({super.key, required this.meal});
 
   @override
   Widget build(BuildContext context) {
     // Calculate health score classification
-    final String healthClassification = meal['healthScore'].toString() ?? 'Unknown';
+    final int healthClassification =
+        int.tryParse(meal['healthScore'].toString()) ?? -1;
 
     return Scaffold(
       backgroundColor: Colors.pink[50],
       appBar: AppBar(
-        title: Text(meal['foodItem'] ?? 'Health Rating'),
+        title: Text(meal['foodCombination'] ?? 'Health Rating'),
         backgroundColor: Colors.pink[50],
       ),
       body: Container(
         width: double.infinity, // Ensures the container takes up the full width
-        height: double.infinity, // Ensures the container takes up the full height
+        height:
+            double.infinity, // Ensures the container takes up the full height
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -43,7 +45,6 @@ class HealthRatingScreen extends StatelessWidget {
                     width: double.infinity,
                     height: 200,
                     fit: BoxFit.cover,
-
                   ),
                 ),
               const SizedBox(height: 16),
@@ -56,26 +57,26 @@ class HealthRatingScreen extends StatelessWidget {
               const SizedBox(height: 16),
 
               // Health Score Explanation
-              if (healthClassification == 'Healthy')
+              if (healthClassification >= 8 && healthClassification < 11)
                 Text(
-                  'This meal is classified as healthy based on its ingredients! It contains a high average healthiness rating of 8–10.',
+                  'This meal is classified as healthy based on its ingredients!',
                   style: TextStyle(fontSize: 16),
                 )
-              else if (healthClassification == 'Moderate')
+              else if (healthClassification >= 5 && healthClassification < 8)
                 Text(
-                  'This meal is classified as moderate. It contains ingredients with an average healthiness rating of 5–7.9.',
+                  'This meal is classified as moderate.',
                   style: TextStyle(fontSize: 16),
                 )
-              else if (healthClassification == 'Unhealthy')
-                  Text(
-                    'This meal is classified as unhealthy. It contains ingredients with an average healthiness rating below 5.',
-                    style: TextStyle(fontSize: 16),
-                  )
-                else
-                  Text(
-                    'Health rating information is not available for this meal.',
-                    style: TextStyle(fontSize: 16),
-                  ),
+              else if (healthClassification >= 0 && healthClassification < 5)
+                Text(
+                  'This meal is classified as unhealthy.',
+                  style: TextStyle(fontSize: 16),
+                )
+              else
+                Text(
+                  'Health rating information is not available for this meal.',
+                  style: TextStyle(fontSize: 16),
+                ),
             ],
           ),
         ),
